@@ -1,7 +1,15 @@
 import React, { useEffect, useState, useRef } from "react";
 import Logo from "../assets/logo.png";
 import { FiUser } from "react-icons/fi";
-import { MapPin, Phone, Clock } from "lucide-react";
+import { MapPin, Phone, Clock, Cake } from "lucide-react";
+import { BrowserRouter } from "react-router-dom";
+import ReactDOM from "react-dom/client";
+import { useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
+import { FaUserCircle } from "react-icons/fa";
+import { HiMiniShieldCheck } from "react-icons/hi2";
+
+
 
 import Img1 from "../assets/Img1.jpeg";
 import Img2 from "../assets/Img2.jpeg";
@@ -13,20 +21,39 @@ import Img7 from "../assets/Img7.jpeg";
 import Img8 from "../assets/Img8.jpeg";
 import Img9 from "../assets/Img9.jpeg";
 import Img10 from "../assets/Img10.jpeg";
-import Google from "../assets/Googlelogo.png"
+import Google from "../assets/Googlelogo.png";
+import fbcafe from "../assets/fb cafe.PNG";
+import library from "../assets/library.PNG";
+import chai from "../assets/chai.PNG";
+import large from "../assets/large.PNG";
+import orea from "../assets/orea.PNG";
+import hot from "../assets/hotcoffe.PNG";
+import hazelnut from "../assets/hazelnut.PNG";
+import classic from "../assets/classic.PNG";
+import masala from "../assets/masala.PNG";
+import plain from "../assets/plainmaggi.PNG";
+import veg from "../assets/vegmaggi.PNG";
+import chese from "../assets/cake.PNG";
+import vanila from "../assets/vanila.PNG";
+import hotcoffe from "../assets/hotcofe.PNG";
+import caramel from "../assets/caramel.PNG";
+import DeveloperCredit from "./DeveloperCredit";
+
+
 
 const Home = () => {
   const images = [Img1, Img2, Img3, Img4, Img5, Img6, Img7, Img8, Img9, Img10];
-  const [isZoomed, setIsZoomed] = useState(false);
   const [activeIndex, setActiveIndex] = useState(0);
   const [isHovering, setIsHovering] = useState(false);
-  const [isOpen, setIsOpen] = useState(false);
   const [openIndex, setOpenIndex] = useState(null);
+  const navigate = useNavigate();
 
-  
+
 
   useEffect(() => {
     if (isHovering) return;
+
+
 
 
     const reviews = [
@@ -140,6 +167,119 @@ Please connect with the student.`;
     }
   };
 
+  const menuItems = [
+    {
+      id: 1,
+      name: "Classic Cold Coffee",
+      price: "₹60",
+      image: classic
+    },
+    {
+      id: 2,
+      name: "Hazelnut Coffee",
+      price: "₹80",
+      image: hazelnut
+    },
+    {
+      id: 3,
+      name: "Hot Coffee",
+      price: "₹30",
+      image: hot
+    },
+    {
+      id: 4,
+      name: "Chai Regular",
+      price: "₹15",
+      image: chai
+    },
+    {
+      id: 5,
+      name: "Chai Large",
+      price: "₹25",
+      image: large
+
+    },
+    {
+      id: 6,
+      name: "Masala Chai",
+      price: "₹20",
+      image: masala
+    },
+    {
+      id: 7,
+      name: "Plain Maggie",
+      price: "₹40",
+      image: plain
+    },
+    {
+      id: 8,
+      name: "Veggie Maggie",
+      price: "₹50",
+      image: veg
+    },
+    {
+      id: 10,
+      name: "Cheese Maggie",
+      price: "₹60",
+      image: chese
+
+    },
+    {
+      id: 9,
+      name: "Oreo Shake",
+      price: "₹80",
+      image: orea
+    },
+
+    {
+      id: 11,
+      name: "Vanilla Coffee",
+      price: "₹80",
+      image: vanila
+    },
+    {
+      id: 12,
+      name: "Caramel Coffee",
+      price: "₹90",
+      image: caramel
+
+    },
+    {
+      id: 13,
+      name: "Black Coffee",
+      price: "₹35",
+      image: hotcoffe
+    }
+
+
+  ]
+
+  const coldDrinks = [
+    {
+      id: 101,
+      name: "Coca Cola",
+      price: "₹20",
+    },
+    {
+      id: 102,
+      name: "Fanta",
+      price: "₹20",
+    },
+    {
+      id: 103,
+      name: "Sprite",
+      price: "₹20",
+    },
+    {
+      id: 104,
+      name: "Limca",
+      price: "₹20",
+    },
+
+  ];
+
+
+
   const policies = [
     {
       title: "Membership Policy",
@@ -201,21 +341,933 @@ Please connect with the student.`;
     return () => clearInterval(interval);
   }, []);
 
+  const [showOrder, setShowOrder] = useState(false)
+  const [selectedItems, setSelectedItems] = useState([])
+  const [seatNumber, setSeatNumber] = useState("")
+  const [cartItems, setCartItems] = useState([])
+  const [showColdDrinks, setShowColdDrinks] = useState(false);
+  const [paymentMethod, setPaymentMethod] = useState("");
+  const [onlinePaymentStarted, setOnlinePaymentStarted] = useState(false);
+  const [currentOrderId, setCurrentOrderId] = useState("");
+  const [showDeveloperCard, setShowDeveloperCard] = useState(true);
 
+
+  useEffect(() => {
+    if (showOrder) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "auto";
+    }
+  }, [showOrder]);
+
+
+  const CAFE_UPI_ID = "9560938348@okbizaxis";
+  const CAFE_NAME = "FB Cafe";
+  const WHATSAPP_NUMBER = "919990226207";
+
+  const getItemPrice = (item) => {
+    return Number(String(item.price).replace(/[^\d.]/g, "")) || 0;
+  };
+
+  const getCartTotal = () => {
+    return cartItems.reduce((total, item) => {
+      return total + getItemPrice(item) * item.quantity;
+    }, 0);
+  };
+
+  const createOrderId = () => {
+    return `FBCAFE${Date.now()}`;
+  };
+
+
+  const buildUpiQuery = (amount, orderId) => {
+    return new URLSearchParams({
+      pa: CAFE_UPI_ID,
+      pn: CAFE_NAME,
+      am: Number(amount).toFixed(2),
+      cu: "INR",
+      tn: `FB Cafe Order ${orderId}`,
+      tr: orderId,
+    }).toString();
+  };
+
+  const buildUpiPaymentLink = (amount, orderId) => {
+    return `upi://pay?${buildUpiQuery(amount, orderId)}`;
+  };
+
+  const buildAndroidIntentLink = (amount, orderId) => {
+    return `intent://pay?${buildUpiQuery(amount, orderId)}#Intent;scheme=upi;end`;
+  };
+
+  const openOnlinePayment = () => {
+    if (cartItems.length === 0) {
+      alert("Please add at least one item");
+      return;
+    }
+
+    const amount = getCartTotal();
+
+    if (amount <= 0) {
+      alert("Invalid order amount");
+      return;
+    }
+
+    const orderId = currentOrderId || createOrderId();
+
+    setPaymentMethod("Online Payment");
+    setCurrentOrderId(orderId);
+    setOnlinePaymentStarted(true);
+
+    const isAndroid = /Android/i.test(navigator.userAgent);
+    const paymentLink = isAndroid
+      ? buildAndroidIntentLink(amount, orderId)
+      : buildUpiPaymentLink(amount, orderId);
+
+    window.location.href = paymentLink;
+  };
+
+  const resetOnlinePayment = () => {
+    setOnlinePaymentStarted(false);
+    setCurrentOrderId("");
+  };
+
+  const handleCart = (item) => {
+    resetOnlinePayment();
+
+    const existingItem = cartItems.find((data) => data.id === item.id);
+
+    if (existingItem) {
+      setCartItems(
+        cartItems.map((data) =>
+          data.id === item.id
+            ? { ...data, quantity: data.quantity + 1 }
+            : data
+        )
+      );
+    } else {
+      setCartItems([...cartItems, { ...item, quantity: 1 }]);
+    }
+  };
+
+  const increaseQuantity = (id) => {
+    resetOnlinePayment();
+
+    setCartItems(
+      cartItems.map((item) =>
+        item.id === id
+          ? { ...item, quantity: item.quantity + 1 }
+          : item
+      )
+    );
+  };
+
+  const decreaseQuantity = (id) => {
+    resetOnlinePayment();
+
+    setCartItems(
+      cartItems
+        .map((item) =>
+          item.id === id
+            ? { ...item, quantity: item.quantity - 1 }
+            : item
+        )
+        .filter((item) => item.quantity > 0)
+    );
+  };
+
+  const categories = [...new Set(menuItems.map((item) => item.category))];
+
+
+
+
+  //   const amount = getCartTotal();
+
+  //   if (amount <= 0) {
+  //     alert("Invalid order amount");
+  //     return;
+  //   }
+
+  //   const orderId = currentOrderId || createOrderId();
+  //   const upiLink = buildUpiPaymentLink(amount, orderId);
+
+  //   setPaymentMethod("Online Payment");
+  //   setCurrentOrderId(orderId);
+  //   setOnlinePaymentStarted(true);
+
+  //   window.location.href = upiLink;
+  // };
+
+  const sendWhatsappOrder = (
+    paymentStatus = "Payment status not confirmed",
+    orderId = currentOrderId || createOrderId()
+  ) => {
+    const orderItems = cartItems
+      .map((item) => {
+        const itemTotal = getItemPrice(item) * item.quantity;
+        return `${item.name} x${item.quantity} = Rs.${itemTotal}`;
+      })
+      .join("\n");
+
+    const totalAmount = getCartTotal();
+
+    const message = `
+Hi FB Cafe,
+
+New cafe order received.
+
+Order ID: ${orderId}
+Seat Number: ${seatNumber}
+
+Order:
+${orderItems}
+
+Total Amount:
+Rs.${totalAmount}
+
+Payment Method:
+${paymentMethod}
+
+Payment Status:
+${paymentStatus}
+
+Kindly deliver the order to my seat once it is ready.
+
+Thank you.
+`;
+
+    const whatsappURL =
+      `https://api.whatsapp.com/send?phone=${WHATSAPP_NUMBER}&text=${encodeURIComponent(message)}`;
+
+    window.open(whatsappURL, "_blank");
+  };
+
+  const handleConfirmOrder = () => {
+    if (cartItems.length === 0) {
+      alert("Please add at least one item");
+      return;
+    }
+
+    if (!seatNumber) {
+      alert("Please enter seat number");
+      return;
+    }
+
+    if (!paymentMethod) {
+      alert("Please select payment method");
+      return;
+    }
+
+    if (paymentMethod === "Online Payment") {
+      if (!onlinePaymentStarted) {
+        alert("Please click Pay Online and complete payment first");
+        return;
+      }
+
+      sendWhatsappOrder(
+        "Online payment completed by customer. Please verify UPI payment.",
+        currentOrderId
+      );
+      return;
+    }
+
+    sendWhatsappOrder("Pay at counter", createOrderId());
+  };
+
+
+  const totalAmt = getCartTotal();
 
 
   return (
     <div className="w-full min-h-screen overflow-x-hidden">
-
       {/* NAVBAR */}
-      <nav className="bg-[#e0e0a0] flex items-center justify-between px-5 h-20 shadow-sm">
-        <div className="flex items-center">
-          <img src={Logo} alt="Logo" className="h-20" />
-          <h1 className="text-2xl font-bold ml-5">FRONT BENCHERS LIBRARY</h1>
+      <div className="bg-[#2D1B14] hover:bg-[#1E120D]">
+        <DeveloperCredit />
+      </div>
+      <nav className="flex flex-col lg:flex-row shadow-sm relative">
+
+
+        <div className="flex flex-col lg:flex-row w-full">
+
+          <div className="w-full lg:w-1/2">
+
+            {/* Left Image */}
+            <img
+              className="
+          block
+          w-full
+          h-auto
+          max-h-[300px]
+          md:max-h-[350px]
+          lg:h-40
+          object-cover
+        "
+              src={library}
+              alt=""
+            />
+          </div>
+
+
+
+
+
+          {/* Right Image Container */}
+          <div className="relative w-full lg:w-1/2">
+
+            <img
+              className="
+          block
+          w-full
+          h-auto
+          max-h-[300px]
+          md:max-h-[350px]
+          lg:h-40
+          object-cover
+        "
+              src={fbcafe}
+              alt=""
+            />
+            <button
+              onClick={() => navigate("/login")}
+              className="
+    absolute
+    top-4
+    right-4
+    group
+  "
+            >
+              <div
+                className="
+      flex items-center gap-2
+      px-4 py-2
+      rounded-full
+      backdrop-blur-md
+      bg-black/20
+      border border-white/20
+      shadow-xl
+      hover:bg-black/40
+      transition-all duration-500
+      hover:scale-105
+    "
+              >
+                <HiMiniShieldCheck
+                  size={24}
+                  className="text-amber-300"
+                />
+
+                <span
+                  className="
+        text-white
+        font-medium
+        text-sm
+        hidden md:block
+      "
+                >
+                  Admin Portal
+                </span>
+              </div>
+            </button>
+
+
+            <div className="relative">
+
+              {/* Main Library Page */}
+              <div className={`${showOrder ? "blur-sm h-screen overflow-hidden" : ""}`}>
+
+                <div className="flex justify-center">
+
+                  <button
+                    onClick={() => setShowOrder(true)}
+                    className="
+              absolute
+              top-1/2 left-1/2
+              -translate-x-1/2 -translate-y-1/2
+
+              bg-black text-white
+
+              px-4 sm:px-5 md:px-5
+              py-2 md:py-2
+
+              rounded-xl
+
+              hover:bg-gray-800
+
+              transition-all duration-300
+              hover:scale-105
+
+              text-sm sm:text-base md:text-lg
+
+              -mt-4 sm:-mt-5 md:-mt-7 ml-2
+            "
+                  >
+                    Order Now
+                  </button>
+
+                </div>
+
+              </div>
+
+              {/* Popup Modal */}
+              {showOrder && (
+
+                <div className="
+          fixed inset-0
+          flex items-center justify-center
+          bg-black/50
+          backdrop-blur-sm
+          z-50
+          p-3 sm:p-4
+        ">
+
+                  <motion.div
+
+                    initial={{
+                      opacity: 0,
+                      scale: 0.85,
+                      y: 40,
+                      filter: "blur(10px)"
+                    }}
+
+                    animate={{
+                      opacity: 1,
+                      scale: 1,
+                      y: 0,
+                      filter: "blur(0px)"
+                    }}
+
+                    exit={{
+                      opacity: 0,
+                      scale: 0.9,
+                      y: 20,
+                      filter: "blur(6px)"
+                    }}
+
+                    transition={{
+                      type: "spring",
+                      damping: 22,
+                      stiffness: 180,
+                      mass: 0.8
+                    }}
+
+                    className="
+              bg-white/80
+              backdrop-blur-2xl
+              border border-white/30
+              shadow-2xl
+
+              p-4 sm:p-6 md:p-8
+
+              rounded-[25px] md:rounded-[30px]
+
+              w-full
+              max-w-[800px]
+
+              relative
+
+              max-h-[85vh]
+
+              overflow-y-auto
+              scrollbar-thin
+            "
+                  >
+
+                    <button
+                      onClick={() => setShowOrder(false)}
+                      className="
+                absolute
+                top-3 right-4
+
+                text-2xl md:text-3xl
+
+                hover:scale-125
+                transition-all duration-300
+              "
+                    >
+                      ×
+                    </button>
+
+                    <h2 className="
+              text-2xl sm:text-3xl md:text-4xl
+              font-bold
+              mb-5 md:mb-8
+            ">
+                      Order Menu
+                    </h2>
+
+                    <div className="  grid
+    grid-cols-1
+    sm:grid-cols-2
+    lg:grid-cols-3
+    gap-6">
+
+                      {menuItems.map((item) => (
+                        <div
+                          className="
+    bg-white
+    rounded-2xl
+    overflow-hidden
+    shadow-md
+    hover:shadow-xl
+    transition-all duration-300
+    hover:-translate-y-1
+  "
+                        >
+
+
+                          <img
+                            src={item.image}
+                            alt={item.name}
+                            className="
+      w-full
+      h-44
+      sm:h-44
+      md:h-52
+      object-cover
+    "
+                          />
+
+                          <div className="p-4">
+
+                            <h3 className="text-lg font-semibold">
+                              {item.name}
+                            </h3>
+
+                            {/* <p className="text-sm text-gray-500 mt-1">
+      Fresh & Delicious
+    </p> */}
+
+                            <div className="flex justify-between items-center mt-4">
+
+                              <span className="font-bold text-lg">
+                                {item.price}
+                              </span>
+                            </div>
+
+                            <div className="flex items-center gap-3">
+
+                              {cartItems.find((data) => data.id === item.id) ? (
+
+                                <div className="
+      flex items-center gap-3
+      bg-black text-white
+      px-4 py-2
+      rounded-xl
+    ">
+
+                                  <button
+                                    onClick={() => decreaseQuantity(item.id)}
+                                    className="text-xl"
+                                  >
+                                    -
+                                  </button>
+
+                                  <span>
+
+                                    {
+                                      cartItems.find((data) => data.id === item.id)
+                                        ?.quantity
+                                    }
+
+                                  </span>
+
+                                  <button
+                                    onClick={() => increaseQuantity(item.id)}
+                                    className="text-xl"
+                                  >
+                                    +
+                                  </button>
+
+                                </div>
+
+                              ) : (
+
+                                <button
+                                  onClick={() => handleCart(item)}
+                                  className="
+           bg-green-600
+          text-white
+          px-5
+          py-2
+          rounded-xl
+          font-medium
+          hover:bg-green-700
+      "
+                                >
+                                  Add
+                                </button>
+
+                              )}
+
+                            </div>
+
+                          </div>
+
+                        </div>
+                      ))}
+
+                    </div>
+                    <div className="mt-5 border rounded-2xl overflow-hidden">
+
+                      <button
+                        onClick={() => setShowColdDrinks(!showColdDrinks)}
+                        className="
+      w-full
+      flex justify-between items-center
+      p-4
+      bg-gray-100
+      font-bold
+      text-lg
+    "
+                      >
+                        🥤 Cold Drinks
+
+                        <span>
+                          {showColdDrinks ? "▲" : "▼"}
+                        </span>
+                      </button>
+
+                      {showColdDrinks && (
+
+                        <div className="p-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+
+                          {coldDrinks.map((item) => (
+
+                            <div
+                              key={item.id}
+                              className="
+          border
+          p-4
+          rounded-xl
+          flex
+          justify-between
+          items-center
+        "
+                            >
+
+                              <div>
+                                <h3 className="font-semibold">
+                                  {item.name}
+                                </h3>
+
+                                <p>{item.price}</p>
+                              </div>
+
+                              <div>
+
+                                {cartItems.find(
+                                  (data) => data.id === item.id
+                                ) ? (
+
+                                  <div
+                                    className="
+                flex items-center gap-3
+                bg-black text-white
+                px-3 py-2 rounded-xl
+              "
+                                  >
+
+                                    <button
+                                      onClick={() =>
+                                        decreaseQuantity(item.id)
+                                      }
+                                    >
+                                      -
+                                    </button>
+
+                                    <span>
+                                      {
+                                        cartItems.find(
+                                          (data) =>
+                                            data.id === item.id
+                                        )?.quantity
+                                      }
+                                    </span>
+
+                                    <button
+                                      onClick={() =>
+                                        increaseQuantity(item.id)
+                                      }
+                                    >
+                                      +
+                                    </button>
+
+                                  </div>
+
+                                ) : (
+
+                                  <button
+                                    onClick={() => handleCart(item)}
+                                    className="
+                bg-black
+                text-white
+                px-4 py-2
+                rounded-lg
+              "
+                                  >
+                                    Add
+                                  </button>
+
+                                )}
+
+                              </div>
+
+                            </div>
+
+                          ))}
+
+                        </div>
+
+                      )}
+
+                    </div>
+
+
+
+                    <div className="mt-6">
+                      <h2 className="text-2xl font-bold mb-4">
+                        Selected Items
+                      </h2>
+
+                      <div className="space-y-3">
+                        {cartItems.length === 0 ? (
+                          <p className="text-sm text-gray-500">
+                            No item selected yet
+                          </p>
+                        ) : (
+                          cartItems.map((item) => (
+                            <div
+                              key={item.id}
+                              className="flex justify-between bg-gray-100 p-3 rounded-xl"
+                            >
+                              <span>
+                                {item.name} x{item.quantity}
+                              </span>
+
+                              <span>
+                                Rs.{getItemPrice(item) * item.quantity}
+                              </span>
+                            </div>
+                          ))
+                        )}
+                      </div>
+
+
+
+                      <div className="mt-6 border rounded-2xl p-4 bg-white">
+                        <h2 className="text-xl font-bold mb-4">
+                          Payment Details
+                        </h2>
+
+                        <div className="bg-green-50 border border-green-200 rounded-xl p-4 mb-4">
+                          <p className="text-sm text-gray-600">
+                            Total Payable Amount
+                          </p>
+
+                          <h2 className="text-3xl font-bold text-green-600">
+                            Rs.{totalAmt}
+                          </h2>
+                        </div>
+
+                        <div className="space-y-3">
+                          <button
+                            onClick={openOnlinePayment}
+                            className={`
+        w-full
+        p-3
+        rounded-xl
+        font-semibold
+
+        ${paymentMethod === "Online Payment"
+                                ? "bg-green-600 text-white"
+                                : "bg-gray-100 text-black"
+                              }
+      `}
+                          >
+                            Pay Online
+                          </button>
+
+                          <button
+                            onClick={() => {
+                              setPaymentMethod("Pay At Counter");
+                              setOnlinePaymentStarted(false);
+                              setCurrentOrderId("");
+                            }}
+                            className={`
+        w-full
+        p-3
+        rounded-xl
+        font-semibold
+
+        ${paymentMethod === "Pay At Counter"
+                                ? "bg-black text-white"
+                                : "bg-gray-100 text-black"
+                              }
+      `}
+                          >
+                            Pay At Counter
+                          </button>
+                        </div>
+
+                        {paymentMethod === "Online Payment" && onlinePaymentStarted && (
+                          <p className="mt-3 text-sm text-green-700">
+                            Payment app opened. Complete payment, then click Confirm Order.
+                          </p>
+                        )}
+
+
+                      </div>
+
+
+
+                      <input
+                        type="number"
+                        placeholder="Enter Seat Number"
+                        value={seatNumber}
+                        min="1"
+                        max="61"
+                        onChange={(e) => {
+                          const value = e.target.value;
+
+                          if (value === "" || (Number(value) >= 1 && Number(value) <= 61)) {
+                            setSeatNumber(value);
+                          }
+                        }}
+                        className="
+    w-full
+    border
+    p-4
+    rounded-2xl
+    outline-none
+    text-black
+  "
+                      />
+
+                    </div>
+
+                    <button
+                      onClick={handleConfirmOrder}
+                      className="
+    bg-black text-white
+
+    px-5 py-3
+
+    rounded-2xl
+
+    mt-6
+
+    w-full
+
+    text-sm sm:text-base md:text-lg
+
+    hover:bg-gray-800
+
+    transition-all duration-300
+    hover:scale-[1.02]
+  "
+                    >
+                      Confirm Order
+                    </button>
+
+                    {/* {showQR && (
+                      <div
+                        className="
+      absolute inset-0
+      bg-black/60
+      flex items-center justify-center
+      rounded-[30px]
+      z-50
+    "
+                      >
+                        <div
+                          className="
+        bg-white
+        p-6
+        rounded-2xl
+        text-center
+        w-[320px]
+        shadow-2xl
+      "
+                        >
+                          <h2 className="text-2xl font-bold mb-4">
+                            Scan & Pay
+                          </h2>
+
+                          <img
+                            src={paymentQr}
+                            alt="QR Code"
+                            className="w-60 h-60 mx-auto"
+                          />
+
+                          <p className="mt-4 text-sm text-gray-600">
+                            Complete payment and click below
+                          </p>
+
+                          <button
+                            onClick={() => {
+                              setShowQR(false);
+                              sendWhatsappOrder();
+                            }}
+                            className="
+          mt-5
+          bg-green-600
+          text-white
+          px-5 py-3
+          rounded-xl
+          w-full
+        "
+                          >
+                            I've Paid
+                          </button>
+
+                          <button
+                            onClick={() => setShowQR(false)}
+                            className="
+          mt-3
+          bg-red-500
+          text-white
+          px-5 py-3
+          rounded-xl
+          w-full
+        "
+                          >
+                            Cancel
+                          </button>
+                        </div>
+                      </div>
+                    )}
+
+ */}
+
+
+                  </motion.div>
+
+                </div>
+
+              )}
+
+            </div>
+
+          </div>
+
         </div>
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         <div className=" hidden md:flex gap-8 text-xl">
-         <span
+
+          {/* <span
       onClick={() => scrollToSection("home")}
       className="cursor-pointer hover:text-blue-600"
     >
@@ -241,7 +1293,7 @@ Please connect with the student.`;
       className="cursor-pointer hover:text-blue-600"
     >
       Policies
-    </span>
+    </span> */}
         </div>
 
         {/* <div className=" hidden md:flex items-center gap-2 cursor-pointer hover:text-blue-600">
@@ -250,8 +1302,13 @@ Please connect with the student.`;
         </div> */}
       </nav>
 
+      {/* <div className="flex justify- h-40">
+        
+
+      </div> */}
+
       {/* ================= MAIN SECTION ================= */}
-      <section id="home" className="bg-[#f7f0e6] px-4 sm:px-6 md:px-10 py-12">
+      <section id="home" className="bg-[#f7f0e6] px-4 sm:px-6 md:px-10 py-18">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row gap-8 md:gap-10">
 
           {/* LEFT IMAGE CARD */}
@@ -689,6 +1746,7 @@ Please connect with the student.`;
     </div>
 
   );
-};
 
+
+}
 export default Home;
