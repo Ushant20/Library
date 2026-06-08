@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: "https://fb.comworld.in/api",
+  baseURL: "https://fb.comworld.in/",
 });
 
 export default api;
