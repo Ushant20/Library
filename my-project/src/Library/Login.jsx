@@ -22,7 +22,7 @@ function Login() {
     e.preventDefault();
 
     try {
-      const res = await api.post("/login", formData);
+      const res = await api.post("/login/", formData);
 
       console.log("SUCCESS:", res.data);
 
@@ -30,7 +30,6 @@ function Login() {
       navigate("/dashboard");
 
     } catch (error) {
-
       console.log("ERROR:", error.response?.data);
       console.log("STATUS:", error.response?.status);
 
