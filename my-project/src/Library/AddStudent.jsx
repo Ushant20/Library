@@ -40,7 +40,7 @@ function AddStudent() {
       );
 
      const receiptLink =
-  `https://fb.comworld.in${response.data.receipt_url}`;
+  `https://api.fb.comworld.in${response.data.receipt_url}`;
 
 
       alert("Student Added Successfully ✅");

@@ -96,7 +96,7 @@ function Fees() {
         if (paymentRes.data?.receipt_url) {
 
             const receiptLink =
-                `https://fb.comworld.in${paymentRes.data.receipt_url}`;
+                `https://api.fb.comworld.in${paymentRes.data.receipt_url}`;
 
             const message = `🏛️ FRONT BENCHERS LIBRARY
 
