@@ -23,29 +23,29 @@ function AddStudent() {
   };
 
 
- 
+
 
   const handleSubmit = async (e) => {
-  e.preventDefault();
+    e.preventDefault();
 
-  if (formData.aadhaar_card.length !== 12) {
-    alert("Aadhaar Number must be exactly 12 digits");
-    return;
-  }
+    if (formData.aadhaar_card.length !== 12) {
+      alert("Aadhaar Number must be exactly 12 digits");
+      return;
+    }
 
-  try {
-    const response = await api.post(
-      "/students/",
-      formData
-    );
+    try {
+      const response = await api.post(
+        "/students/",
+        formData
+      );
 
-    const receiptLink =
-  `http://127.0.0.1:8000${response.data.receipt_url}`;
-    
+     const receiptLink =
+  `https://fb.comworld.in${response.data.receipt_url}`;
 
-    alert("Student Added Successfully ✅");
 
-   const message = `🏛️ FRONT BENCHERS LIBRARY
+      alert("Student Added Successfully ✅");
+
+      const message = `🏛️ FRONT BENCHERS LIBRARY
 
 Dear ${formData.name},
 
@@ -82,38 +82,38 @@ Thank you for choosing Front Benchers Library.
 
 📚 Learn • Focus • Achieve`;
 
-   window.open(
-  `https://wa.me/91${formData.whatsapp}?text=${encodeURIComponent(message)}`,
-  "_blank"
-);
+      window.open(
+        `https://wa.me/91${formData.whatsapp}?text=${encodeURIComponent(message)}`,
+        "_blank"
+      );
 
-    console.log(response.data);
+      console.log(response.data);
 
-    setFormData({
-      name: "",
-      aadhaar_card: "",
-      whatsapp: "",
-      address: "",
-      joining_date: "",
-      fee_amount: "",
-      fee_status: "Pending",
-      fee_due_date: "",
-    });
+      setFormData({
+        name: "",
+        aadhaar_card: "",
+        whatsapp: "",
+        address: "",
+        joining_date: "",
+        fee_amount: "",
+        fee_status: "Pending",
+        fee_due_date: "",
+      });
 
-  } catch (error) {
+    } catch (error) {
 
-    console.log(error);
+      console.log(error);
 
-    alert(
-      error?.response?.data
-        ? JSON.stringify(error.response.data)
-        : "Something went wrong"
-    );
-  }
-};
+      alert(
+        error?.response?.data
+          ? JSON.stringify(error.response.data)
+          : "Something went wrong"
+      );
+    }
+  };
 
 
- 
+
 
   return (
     <div className="min-h-screen bg-gray-100 py-4 sm:py-6 md:py-10 px-2 sm:px-4 md:px-6">

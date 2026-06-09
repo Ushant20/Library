@@ -361,7 +361,7 @@ Please connect with the student.`;
   }, [showOrder]);
 
 
-  const CAFE_UPI_ID = "9560938348@okbizaxis";
+  const CAFE_UPI_ID = "9643394793@axl";
   const CAFE_NAME = "FB Cafe";
   const WHATSAPP_NUMBER = "919990226207";
 
@@ -379,10 +379,9 @@ Please connect with the student.`;
     return `FBCAFE${Date.now()}`;
   };
 
-
   const buildUpiQuery = (amount, orderId) => {
     return new URLSearchParams({
-      pa: CAFE_UPI_ID,
+      pa: CAFE_UPI_ID.trim(),
       pn: CAFE_NAME,
       am: Number(amount).toFixed(2),
       cu: "INR",
@@ -393,10 +392,6 @@ Please connect with the student.`;
 
   const buildUpiPaymentLink = (amount, orderId) => {
     return `upi://pay?${buildUpiQuery(amount, orderId)}`;
-  };
-
-  const buildAndroidIntentLink = (amount, orderId) => {
-    return `intent://pay?${buildUpiQuery(amount, orderId)}#Intent;scheme=upi;end`;
   };
 
   const openOnlinePayment = () => {
@@ -418,19 +413,18 @@ Please connect with the student.`;
     setCurrentOrderId(orderId);
     setOnlinePaymentStarted(true);
 
-    const isAndroid = /Android/i.test(navigator.userAgent);
-    const paymentLink = isAndroid
-      ? buildAndroidIntentLink(amount, orderId)
-      : buildUpiPaymentLink(amount, orderId);
+    const paymentLink = buildUpiPaymentLink(amount, orderId);
 
-    window.location.href = paymentLink;
+    console.log("UPI LINK:", paymentLink);
+
+    // Android + iPhone
+    window.location.assign(paymentLink);
   };
 
   const resetOnlinePayment = () => {
     setOnlinePaymentStarted(false);
     setCurrentOrderId("");
   };
-
   const handleCart = (item) => {
     resetOnlinePayment();
 

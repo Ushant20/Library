@@ -18,27 +18,27 @@ function Login() {
     });
   };
 
-const handleSubmit = async (e) => {
-  e.preventDefault();
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-  try {
-    const res = await api.post("/login/", formData);
+    try {
+      const res = await api.post("/login/", formData);
 
-    console.log("SUCCESS:", res.data);
+      console.log("SUCCESS:", res.data);
 
-    localStorage.setItem("isLoggedIn", "true");
-    navigate("/dashboard");
+      localStorage.setItem("isLoggedIn", "true");
+      navigate("/dashboard");
 
-  } catch (error) {
+    } catch (error) {
 
-    console.log("ERROR:", error.response?.data);
-    console.log("STATUS:", error.response?.status);
+      console.log("ERROR:", error.response?.data);
+      console.log("STATUS:", error.response?.status);
 
-    alert("Invalid Username or Password");
-  }
-};
+      alert("Invalid Username or Password");
+    }
+  };
 
-  
+
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-gray-900 to-black flex items-center justify-center px-4">
