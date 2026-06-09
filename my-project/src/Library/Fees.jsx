@@ -152,6 +152,48 @@ Thank you for choosing Front Benchers Library.
     }
 };
 
+const renewStudent = async (student) => {
+
+    const confirmRenew = window.confirm(
+        `Renew ${student.name}'s membership for next month?`
+    );
+
+    if (!confirmRenew) return;
+
+    const dueDate = new Date(student.fee_due_date);
+    dueDate.setMonth(dueDate.getMonth() + 1);
+
+    const newDueDate = dueDate.toISOString().split("T")[0];
+
+    try {
+
+        await api.post("/payments/", {
+            student: student.id,
+            amount: student.fee_amount,
+        });
+
+        await api.put(`/students/${student.id}/`, {
+            ...student,
+            fee_status: "Paid",
+            fee_due_date: newDueDate,
+            last_payment_date: new Date()
+                .toISOString()
+                .split("T")[0],
+        });
+
+        await fetchStudents();
+        await fetchPayments();
+
+        alert(`Membership renewed till ${newDueDate} ✅`);
+
+    } catch (error) {
+
+        console.log(error.response?.data || error);
+
+        alert("Renew Failed ❌");
+    }
+};
+
 
 
     return (
