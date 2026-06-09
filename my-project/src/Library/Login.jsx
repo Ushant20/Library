@@ -22,7 +22,7 @@ function Login() {
     e.preventDefault();
 
     try {
-      const res = await api.post("/login/", formData);
+      const res = await api.post("/", formData);
 
       console.log("SUCCESS:", res.data);
 
